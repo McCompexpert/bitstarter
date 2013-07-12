@@ -42,7 +42,7 @@ var assertFileExists = function(infile) {
 
 var cheerioHtmlFile = function(htmlfile) {
     return cheerio.load(fs.readFileSync(htmlfile));
-    rest.get(url).on('complete', foobar);	
+    rest.get(url).on('complete', htmlfile);	
 };
 
 var loadChecks = function(checksfile) {
