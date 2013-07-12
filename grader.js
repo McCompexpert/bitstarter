@@ -41,8 +41,7 @@ var assertFileExists = function(infile) {
 };
 
 var cheerioHtmlFile = function(htmlfile) {
-    return cheerio.load(fs.readFileSync(htmlfile));
-    rest.get(url).on('complete', htmlfile);	
+    return cheerio.load(fs.readFileSync(htmlfile));	
 };
 
 var loadChecks = function(checksfile) {
@@ -67,6 +66,25 @@ var clone = function(fn) {
 };
 
 
+var check_url = function(fn) {
+	rest.get(url).on('complete', function(result) {
+		if(result instanceof Error) {
+			console.log("%s does not exist. Super", url);
+			process.exit(1);
+		} else {
+			var htmlfile = "url_response.html";
+			fs.writeFileSync(htmlfile, result);
+			checkings(htmlfile);
+		}
+	});
+};
+
+var checkings = function(file) {
+	var checkJson = checkHtmlFile(file, program.checks);
+	var outJson = JSON.stringify(checkJson, null, 4);
+	console.log(outJson);
+};
+
 if(require.main == module) {
     program
         .option('-c, --checks <check_file>', 'Path to checks.json', clone(assertFileExists), CHECKSFILE_DEFAULT)
@@ -74,10 +92,10 @@ if(require.main == module) {
         .option('-u --url <url>','URL to html file', URL_DEFAULT)
 	.parse(process.argv);
 	if(program.url){
-			var checkJson = checkHtmlFile(program.file, program.checks);
-			var outJson = JSON.stringify(checkJson, null, 4);
-		console.log(outJson);	
-	
+		check_url(program.url);
+	} else {
+		checkings(program.file);
+	}
 } else {
     exports.checkHtmlFile = checkHtmlFile;
-};
+}
