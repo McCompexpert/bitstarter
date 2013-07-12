@@ -66,7 +66,7 @@ var clone = function(fn) {
 };
 
 
-var check_url = function(fn) {
+var check_url = function(url) {
 	rest.get(url).on('complete', function(result) {
 		if(result instanceof Error) {
 			console.log("%s does not exist. Super", url);
